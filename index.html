@@ -150,8 +150,6 @@
   .foot-grid p{ font-size:13px; line-height:1.7; }
   .foot-bottom{ border-top:1px solid #2A3D5C; margin-top:40px; padding-top:22px; display:flex; justify-content:space-between; font-size:12px; flex-wrap:wrap; gap:10px; }
 
-  .draft-flag{ position:fixed; bottom:16px; left:16px; z-index:99; background:var(--bronze); color:#fff; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:8px 14px; border-radius:3px; box-shadow:0 6px 18px rgba(0,0,0,.18); }
-
   @media (max-width:860px){
     .menu{ display:none; }
     .menu-toggle{ display:block; }
@@ -166,6 +164,16 @@
     .cred{ border-right:none; border-bottom:1px solid #2A3D5C; }
     .sec-head h2{ font-size:28px; }
   }
+  .field select{ width:100%; border:1px solid var(--line); border-radius:3px; padding:12px 14px; font-size:14px; font-family:inherit; color:var(--ink); background:#fff; }
+  .field select:focus{ outline:none; border-color:var(--bronze); }
+  .mail-link{ display:inline-block; margin-top:14px; margin-left:2px; font-size:14px; color:var(--bronze); font-weight:600; }
+  .mail-link:hover{ text-decoration:underline; }
+  .btn-wa{ background:#25623f; margin-left:10px; }
+  .btn-wa:hover{ background:#1d4d31; }
+  .form-status{ margin-top:14px; font-size:14px; }
+  .form-status.ok{ color:#1d6b3f; font-weight:600; }
+  .form-status.err{ color:#9a3320; font-weight:600; }
+  @media(max-width:520px){ .btn-wa{ margin-left:0; margin-top:10px; display:block; width:100%; text-align:center; } }
 </style>
 </head>
 <body>
@@ -410,11 +418,31 @@
     </div>
     <div class="contact-grid">
       <div>
-        <div class="field"><label>Nome</label><input type="text" placeholder="Seu nome"></div>
-        <div class="field"><label>E-mail</label><input type="email" placeholder="voce@empresa.com.br"></div>
-        <div class="field"><label>Telefone / WhatsApp</label><input type="tel" placeholder="(00) 00000-0000"></div>
-        <div class="field"><label>Assunto</label><textarea rows="4" placeholder="Conte brevemente sobre a sua necessidade"></textarea></div>
-        <button class="btn" type="button">Enviar mensagem</button>
+        <form id="c_form" onsubmit="return enviarFormspree(event)">
+          <div class="field"><label>Nome</label><input id="c_nome" name="nome" type="text" placeholder="Seu nome" required></div>
+          <div class="field"><label>E-mail</label><input id="c_mailfrom" name="email" type="email" placeholder="voce@empresa.com.br" required></div>
+          <div class="field"><label>Telefone / WhatsApp</label><input id="c_tel" name="telefone" type="tel" placeholder="(00) 00000-0000"></div>
+          <div class="field"><label>Com quem deseja falar?</label>
+            <select id="c_socio" name="socio">
+              <option value="marlos">Dr. Marlos Maia — Londrina/PR</option>
+              <option value="eliana">Dra. Eliana Porto — Lajeado/RS</option>
+            </select>
+          </div>
+          <div class="field"><label>Área de interesse</label>
+            <select id="c_area" name="area">
+              <option value="Conflitos Societários">Conflitos Societários</option>
+              <option value="Holdings e Planejamento Patrimonial">Holdings e Planejamento Patrimonial</option>
+              <option value="Sucessão Empresarial">Sucessão Empresarial</option>
+              <option value="Reestruturação e Governança">Reestruturação e Governança</option>
+              <option value="Gestão de Bens Digitais">Gestão de Bens Digitais</option>
+              <option value="Outro assunto">Outro assunto</option>
+            </select>
+          </div>
+          <div class="field"><label>Assunto</label><textarea id="c_msg" name="mensagem" rows="4" placeholder="Conte brevemente sobre a sua necessidade"></textarea></div>
+          <button class="btn" type="submit">Enviar mensagem</button>
+          <button class="btn btn-wa" type="button" onclick="enviarWhats()">Falar no WhatsApp</button>
+          <div id="c_status" class="form-status" role="status"></div>
+        </form>
       </div>
       <div class="offices">
         <div class="office"><b>Maia e Porto Advogados</b><span>Dr. Marlos Maia — OAB/PR 106.744</span><span>Dra. Eliana Alves da Fontoura Porto — OAB/RS 41.588</span></div>
@@ -462,6 +490,66 @@
     m.style.display = open ? 'none' : 'flex';
     if(!open){ m.style.position='absolute'; m.style.top='74px'; m.style.right='28px'; m.style.flexDirection='column'; m.style.background='#fff'; m.style.padding='18px 22px'; m.style.borderRadius='4px'; m.style.boxShadow='0 12px 30px rgba(0,0,0,.12)'; m.style.gap='16px'; }
   });
+</script>
+<script>
+  // >>> Cole aqui o seu ID do Formspree (ex.: "xmyzabcd") <<<
+  var FORMSPREE_ID = "COLE_SEU_ID_AQUI";
+
+  var WA   = { marlos: "5543988434318", eliana: "5551999549031" };
+  var MAIL = { marlos: "marlos@grupoforpro.com.br", eliana: "eliana@advocaciaelianaporto.com.br" };
+
+  function _dados(){
+    var nome  = (document.getElementById("c_nome").value || "").trim();
+    var socio = document.getElementById("c_socio").value;
+    var area  = document.getElementById("c_area").value;
+    var msg   = (document.getElementById("c_msg").value || "").trim();
+    var saud  = socio === "eliana" ? "Dra. Eliana" : "Dr. Marlos";
+    var texto = "Olá, " + saud + ". ";
+    texto += nome ? ("Meu nome é " + nome + ". ") : "";
+    texto += "Gostaria de agendar uma reunião com o escritório Maia e Porto Advogados";
+    texto += area ? (", na área de " + area + ".") : ".";
+    texto += msg ? ("\n\nAssunto: " + msg) : "";
+    return { socio: socio, area: area, texto: texto, nome: nome, msg: msg };
+  }
+
+  function enviarWhats(){
+    var d = _dados();
+    window.open("https://wa.me/" + WA[d.socio] + "?text=" + encodeURIComponent(d.texto), "_blank");
+  }
+
+  function enviarFormspree(e){
+    e.preventDefault();
+    var status = document.getElementById("c_status");
+    var d = _dados();
+    // Se o Formspree ainda não foi configurado, cai no e-mail (mailto) automaticamente.
+    if (!FORMSPREE_ID || FORMSPREE_ID === "COLE_SEU_ID_AQUI"){
+      var assunto = "Contato pelo site — " + d.area;
+      window.location.href = "mailto:" + MAIL[d.socio] + "?subject=" + encodeURIComponent(assunto) + "&body=" + encodeURIComponent(d.texto);
+      return false;
+    }
+    var form = document.getElementById("c_form");
+    var fd = new FormData(form);
+    fd.append("_subject", "Contato pelo site — " + d.area + " (" + (d.socio==="eliana"?"Dra. Eliana":"Dr. Marlos") + ")");
+    fd.append("_replyto", document.getElementById("c_mailfrom").value || "");
+    status.textContent = "Enviando...";
+    status.className = "form-status";
+    fetch("https://formspree.io/f/" + FORMSPREE_ID, {
+      method: "POST", body: fd, headers: { "Accept": "application/json" }
+    }).then(function(r){
+      if (r.ok){
+        form.reset();
+        status.textContent = "Mensagem enviada. Retornaremos em breve.";
+        status.className = "form-status ok";
+      } else {
+        status.textContent = "Não foi possível enviar agora. Tente pelo WhatsApp ao lado.";
+        status.className = "form-status err";
+      }
+    }).catch(function(){
+      status.textContent = "Falha de conexão. Tente pelo WhatsApp ao lado.";
+      status.className = "form-status err";
+    });
+    return false;
+  }
 </script>
 </body>
 </html>
