@@ -307,7 +307,7 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="eyebrow">Advocacia Empresarial Estratégica · PR · SC · RS</div>
-    <h1>Estrutura jurídica para empresas que precisam continuar.</h1>
+    <h1>Estrutura jurídica para holdings, sucessão empresarial e conflitos societários que precisam continuar.</h1>
     <div class="hero-cta">
       <a href="#contato" class="btn">Agendar reunião</a>
       <a href="#areas" class="btn btn-ghost">Conheça as áreas</a>
@@ -357,7 +357,7 @@
             <li>Quebra de impasses (deadlock) e mediação de disputas de controle.</li>
             <li>Defesa em ações de responsabilidade e prestação de contas.</li>
           </ul>
-          <div class="foot">Indicado para empresas com sociedade desgastada ou em processo de separação de sócios. <a href="#contato">Falar com o escritório →</a></div>
+          <div class="foot">Indicado para empresas com sociedade desgastada ou em processo de separação de sócios. <a href="#contato" onclick="prefillArea('Conflitos Societários')">Falar sobre meu conflito societário →</a></div>
         </div></div>
       </div>
 
@@ -377,7 +377,7 @@
             <li>Acordo de sócios da holding com regras de entrada e saída.</li>
             <li>Análise de impacto tributário, incluindo ITBI e ITCMD.</li>
           </ul>
-          <div class="foot">Indicado para famílias empresárias que querem organizar e proteger o patrimônio. <a href="#contato">Falar com o escritório →</a></div>
+          <div class="foot">Indicado para famílias empresárias que querem organizar e proteger o patrimônio. <a href="#contato" onclick="prefillArea('Holdings e Planejamento Patrimonial')">Estruturar minha holding →</a></div>
         </div></div>
       </div>
 
@@ -397,7 +397,7 @@
             <li>Testamento e pactos que reduzem litígios entre herdeiros.</li>
             <li>Governança da transição e preparação dos sucessores.</li>
           </ul>
-          <div class="foot">Indicado para quem quer garantir a continuidade do negócio e evitar disputas futuras. <a href="#contato">Falar com o escritório →</a></div>
+          <div class="foot">Indicado para quem quer garantir a continuidade do negócio e evitar disputas futuras. <a href="#contato" onclick="prefillArea('Sucessão Empresarial')">Planejar minha sucessão →</a></div>
         </div></div>
       </div>
 
@@ -417,7 +417,7 @@
             <li>Política de distribuição de lucros e direitos de minoritários.</li>
             <li>Compliance societário e revisão de contratos sociais.</li>
           </ul>
-          <div class="foot">Indicado para empresas em crescimento que precisam profissionalizar a gestão. <a href="#contato">Falar com o escritório →</a></div>
+          <div class="foot">Indicado para empresas em crescimento que precisam profissionalizar a gestão. <a href="#contato" onclick="prefillArea('Reestruturação e Governança')">Reestruturar minha empresa →</a></div>
         </div></div>
       </div>
 
@@ -584,6 +584,10 @@
       area.classList.add('open');
       detail.style.maxHeight = detail.scrollHeight + 'px';
     }
+  }
+  function prefillArea(area){
+    var sel = document.getElementById('c_area');
+    if(sel){ sel.value = area; }
   }
   document.querySelector('.menu-toggle').addEventListener('click', function(){
     var m = document.querySelector('.menu');
